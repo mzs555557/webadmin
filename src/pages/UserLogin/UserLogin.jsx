@@ -1,3 +1,4 @@
+/* eslint-disable import/first */
 /* eslint react/no-string-refs:0 */
 import React, { Component } from 'react';
 import { withRouter, Link } from 'react-router-dom';
@@ -8,6 +9,9 @@ import {
   FormError as IceFormError,
 } from '@icedesign/form-binder';
 import IceIcon from '@icedesign/foundation-symbol';
+// eslint-disable-next-line camelcase
+import { Admin_Login } from '../../api/request';
+
 
 @withRouter
 class UserLogin extends Component {
@@ -41,9 +45,22 @@ class UserLogin extends Component {
         console.log('errors', errors);
         return;
       }
-      console.log(values);
-      Message.success('登录成功');
-      this.props.history.push('/');
+      // console.log(values);
+
+      const data = {
+        username: values.username,
+        password: values.password,
+      };
+      // console.log(JSON.parse(data));
+      Admin_Login(data).then((msg) => {
+        console.log(msg);
+        if (msg.data.code !== 0) {
+          Message.error(msg.data.msg);
+        } else if (msg.data.code === 0) {
+          Message.success(msg.data.msg);
+          this.props.history.push('/');
+        }
+      });
     });
   };
 
