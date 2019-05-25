@@ -4,23 +4,10 @@
 
 const headerMenuConfig = [
   {
-    name: '反馈',
-    path: 'https://github.com/alibaba/ice',
-    external: true,
-    newWindow: true,
-    icon: 'message',
-  },
-  {
-    name: '帮助',
-    path: 'https://alibaba.github.io/ice',
-    external: true,
-    newWindow: true,
-    icon: 'bangzhu',
-  },
-  {
     name: '退出',
     path: '/user/login',
     icon: 'yonghu',
+    data: 'logout',
   },
 ];
 

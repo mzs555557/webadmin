@@ -11,7 +11,9 @@ import {
 import IceIcon from '@icedesign/foundation-symbol';
 // eslint-disable-next-line camelcase
 import { Admin_Login } from '../../api/request';
+import Cookies from '../../utils/CookieUtils';
 
+const cookies = new Cookies();
 
 @withRouter
 class UserLogin extends Component {
@@ -53,12 +55,12 @@ class UserLogin extends Component {
       };
       // console.log(JSON.parse(data));
       Admin_Login(data).then((msg) => {
-        console.log(msg);
+        cookies.set('username', msg.data.data.username);
         if (msg.data.code !== 0) {
           Message.error(msg.data.msg);
         } else if (msg.data.code === 0) {
           Message.success(msg.data.msg);
-          this.props.history.push('/');
+          this.props.history.push('/dashboard');
         }
       });
     });

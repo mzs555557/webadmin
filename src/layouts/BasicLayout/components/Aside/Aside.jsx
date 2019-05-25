@@ -8,7 +8,10 @@ import Logo from '../Logo';
 import Notify from '../../../../components/Notify';
 import { asideMenuConfig } from '../../../../menuConfig';
 
+import Cookies from '../../../../utils/CookieUtils';
 import './Aside.scss';
+
+const cookies = new Cookies();
 
 @withRouter
 export default class BasicLayout extends Component {
@@ -40,10 +43,9 @@ export default class BasicLayout extends Component {
           />
           <div className="user-profile">
             <span className="user-name" style={{ fontSize: '13px' }}>
-              淘小宝
+              {cookies.get('username')}
             </span>
             <br />
-            <span className="user-department">技术部</span>
           </div>
         </div>
 
