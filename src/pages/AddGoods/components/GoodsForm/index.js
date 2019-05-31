@@ -1,42 +1,86 @@
+/* eslint-disable array-callback-return */
 /* eslint react/no-string-refs:0 */
 import React, { Component } from 'react';
 import IceContainer from '@icedesign/container';
+import { withRouter } from 'react-router-dom';
 import {
   Input,
   Button,
   Message,
   NumberPicker,
-  DatePicker,
-  Radio,
+  // DatePicker,
+  // Radio,
   Select,
+  Upload,
 } from '@alifd/next';
 import {
   FormBinderWrapper as IceFormBinderWrapper,
   FormBinder as IceFormBinder,
   FormError as IceFormError,
 } from '@icedesign/form-binder';
+// eslint-disable-next-line camelcase
+import { Admin_AddProduct, Admin_Categories } from '../../../../api/request';
 import PageHead from '../../../../components/PageHead';
 
 const { Option } = Select;
-const { Group: RadioGroup } = Radio;
-const { RangePicker } = DatePicker;
+// const { Group: RadioGroup } = Radio;
+// const { RangePicker } = DatePicker;
 
+@withRouter
 export default class GoodsForm extends Component {
   state = {
     value: {},
   };
 
+  componentWillMount() {
+    Admin_Categories().then((msg) => {
+      // console.log(msg);
+      if (msg.data.code === 0) {
+        const data = msg.data.data.map((item) => {
+          return {
+            label: item.categoryName,
+            value: item.categoryType,
+          };
+        });
+        this.setState({
+          // eslint-disable-next-line react/no-unused-state
+          categories: data,
+        });
+      }
+      // console.log(this.state.categories);
+    });
+  }
   formChange = (value) => {
+    // value.productIcon = value.productIcon[0].response.data;
     console.log('value', value);
   };
+  beforeUpload = () => {
+    // console.log('beforeUpload callback : ', info);
+  };
+  onChange = () => {
+    // console.log('onChane callback : ', info);
+  }
+  onSuccess = () => {
+    // console.log('onSuccess callback : ', res);
+  }
+  onError = (file) => {
+    Message.error(file);
+  }
 
   validateAllFormField = () => {
-    this.refs.form.validateAll((errors, values) => {
-      if (errors) {
-        return;
+    const value = this.state.value;
+    value.productIcon = value.productIcon[0].response.data;
+    const data = value;
+    Admin_AddProduct(data).then((msg) => {
+      console.log(msg);
+      if (msg.data.code === 0) {
+        Message.success(msg.data.data);
+        setTimeout(() => {
+          this.props.history.push('/goods');
+        }, 1000);
+      } else {
+        Message.error(msg.data.msg);
       }
-      console.log({ values });
-      Message.success('提交成功');
     });
   };
 
@@ -51,98 +95,86 @@ export default class GoodsForm extends Component {
             ref="form"
           >
             <div style={styles.formItem}>
+              <div style={styles.formLabel}>商品图片</div>
+              <IceFormBinder name="productIcon" required message="商品名称必填">
+                <Upload.Card
+                  listType="card"
+                  action="http://localhost:8888/admin/uploadImg"
+                  limit={1}
+                  accept="image/png, image/jpg, image/jpeg, image/gif, image/bmp"
+                  beforeUpload={this.beforeUpload}
+                  onChange={this.onChange}
+                  onSuccess={this.onSuccess}
+                  onError={this.onError}
+                />
+              </IceFormBinder>
+            </div>
+            <div style={styles.formItem}>
               <div style={styles.formLabel}>商品名称：</div>
-              <IceFormBinder name="goodsName" required message="商品名称必填">
+              <IceFormBinder name="productName" required message="商品名称必填">
                 <Input
                   placeholder="请输入商品名称"
                   style={{ width: '400px' }}
                 />
               </IceFormBinder>
               <div style={styles.formError}>
-                <IceFormError name="goodsName" />
+                <IceFormError name="productName" />
               </div>
             </div>
             <div style={styles.formItem}>
-              <div style={styles.formLabel}>条形码：</div>
-              <IceFormBinder name="code">
-                <Input
-                  placeholder="请输入数字条形码"
-                  style={{ width: '400px' }}
-                />
-              </IceFormBinder>
-            </div>
-            <div style={styles.formItem}>
               <div style={styles.formLabel}>库存量：</div>
-              <IceFormBinder name="stock" required message="联系方式必填">
+              <IceFormBinder name="productStock" required message="联系方式必填">
                 <NumberPicker />
               </IceFormBinder>
             </div>
             <div style={styles.formItem}>
-              <div style={styles.formLabel}>商品标签：</div>
-              <IceFormBinder name="bookName">
+              <div style={styles.formLabel}>商品分类：</div>
+              <IceFormBinder name="categoryType">
                 <Select
                   placeholder="请选择"
-                  mode="multiple"
+                  mode="single"
                   style={{ width: '400px' }}
-                >
-                  <Option value="1">新品</Option>
-                  <Option value="2">数码</Option>
-                  <Option value="3">智能</Option>
-                  <Option value="4">生活</Option>
-                </Select>
+                  dataSource={this.state.categories}
+                />
               </IceFormBinder>
             </div>
             <div style={styles.formItem}>
               <div style={styles.formLabel}>商品价格：</div>
-              <IceFormBinder name="price" required message="商品价格必填">
+              <IceFormBinder name="productPrice" required message="商品价格必填">
                 <Input
-                  placeholder="请输入商品价格: ￥199.99"
+                  placeholder="请输入商品价格: 199.99"
+                  style={{ width: '400px' }}
+                  htmlType="number"
+                />
+              </IceFormBinder>
+              <div style={styles.formError}>
+                <IceFormError name="productPrice" />
+              </div>
+            </div>
+            <div style={styles.formItem}>
+              <div style={styles.formLabel}>商品状态</div>
+              <IceFormBinder name="productStatus">
+                <Select
+                  placeholder="请选择"
+                  mode="single"
+                  style={{ width: '400px' }}
+                >
+                  <Option value={0}>上架</Option>
+                  <Option value={1}>下架</Option>
+                </Select>
+              </IceFormBinder>
+            </div>
+            <div style={styles.formItem}>
+              <div style={styles.formLabel}>商品描述：</div>
+              <IceFormBinder name="productDescription" required message="商品价格必填">
+                <Input
+                  placeholder="描述"
                   style={{ width: '400px' }}
                 />
               </IceFormBinder>
               <div style={styles.formError}>
-                <IceFormError name="price" />
+                <IceFormError name="productDescription" />
               </div>
-            </div>
-            <div style={styles.formItem}>
-              <div style={styles.formLabel}>预售时间：</div>
-              <IceFormBinder name="reverseTime">
-                <RangePicker style={{ width: '400px' }} />
-              </IceFormBinder>
-            </div>
-            <div style={styles.formItem}>
-              <div style={styles.formLabel}>预购条件：</div>
-              <IceFormBinder name="payment">
-                <RadioGroup
-                  dataSource={[
-                    {
-                      value: '1',
-                      label: '需要支付',
-                    },
-                    {
-                      value: '2',
-                      label: '无需支付',
-                    },
-                  ]}
-                />
-              </IceFormBinder>
-            </div>
-            <div style={styles.formItem}>
-              <div style={styles.formLabel}>体验展示：</div>
-              <IceFormBinder name="show">
-                <RadioGroup
-                  dataSource={[
-                    {
-                      value: '1',
-                      label: '展示',
-                    },
-                    {
-                      value: '2',
-                      label: '不展示',
-                    },
-                  ]}
-                />
-              </IceFormBinder>
             </div>
             <Button
               type="primary"

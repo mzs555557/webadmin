@@ -11,6 +11,8 @@ import ChargeBack from './pages/ChargeBack';
 import Dispatch from './pages/Dispatch';
 import Goods from './pages/Goods';
 import AddOrder from './pages/AddOrder';
+
+import AddCategory from './pages/AddCategory';
 import AddGoods from './pages/AddGoods';
 
 const routerConfig = [
@@ -53,6 +55,10 @@ const routerConfig = [
   {
     path: '/add/goods',
     component: AddGoods,
+  },
+  {
+    path: '/add/category',
+    component: AddCategory,
   },
 ];
 
