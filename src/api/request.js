@@ -26,6 +26,10 @@ const Admin_Categories = () => {
 const Admin_AllGoods = (data) => {
   return Instance.post('/buyer/product/list', data);
 };
+// 通过categoryType获取categoryName
+const Admin_Type2Name = (categoryType) => {
+  return Instance.get(`/admin/categorietype/${categoryType}`);
+};
 
 export {
   Admin_Login,
@@ -34,4 +38,5 @@ export {
   Admin_AddCategory,
   Admin_Categories,
   Admin_AllGoods,
+  Admin_Type2Name,
 };

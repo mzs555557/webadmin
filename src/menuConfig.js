@@ -47,11 +47,11 @@ const asideMenuConfig = [
     path: '/add/goods',
     icon: 'publish',
   },
-  {
-    name: '添加订单',
-    path: '/add/order',
-    icon: 'edit2',
-  },
+  // {
+  //   name: '添加订单',
+  //   path: '/add/order',
+  //   icon: 'edit2',
+  // },
   {
     name: '\u6DFB\u52A0\u5206\u7C7B',
     path: '/add/category',

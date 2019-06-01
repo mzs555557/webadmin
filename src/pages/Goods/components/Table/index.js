@@ -1,27 +1,31 @@
 import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
 import { Table, Pagination, Button, Dialog } from '@alifd/next';
 import IceContainer from '@icedesign/container';
+import IceImg from '@icedesign/img';
 import Filter from '../Filter';
+// eslint-disable-next-line camelcase
+import { Admin_AllGoods, Admin_Type2Name } from '../../../../api/request';
 
 // Random Numbers
-const random = (min, max) => {
-  return Math.floor(Math.random() * (max - min + 1) + min);
-};
+// const random = (min, max) => {
+//   return Math.floor(Math.random() * (max - min + 1) + min);
+// };
 
 // MOCK 数据，实际业务按需进行替换
-const getData = (length = 10) => {
-  return Array.from({ length }).map(() => {
-    return {
-      name: ['蓝牙音箱', '天猫精灵', '智能机器人'][random(0, 2)],
-      cate: ['数码', '智能'][random(0, 1)],
-      tag: ['新品', '预售'][random(0, 1)],
-      store: ['余杭店', '滨江店', '西湖店'][random(0, 2)],
-      sales: random(1000, 2000),
-      service: ['可预约', '可体验'][random(0, 1)],
-    };
-  });
-};
-
+// const getData = (length = 10) => {
+//   return Array.from({ length }).map(() => {
+//     return {
+//       name: ['蓝牙音箱', '天猫精灵', '智能机器人'][random(0, 2)],
+//       cate: ['数码', '智能'][random(0, 1)],
+//       tag: ['新品', '预售'][random(0, 1)],
+//       store: ['余杭店', '滨江店', '西湖店'][random(0, 2)],
+//       sales: random(1000, 2000),
+//       service: ['可预约', '可体验'][random(0, 1)],
+//     };
+//   });
+// };
+@withRouter
 export default class GoodsTable extends Component {
   state = {
     current: 1,
@@ -33,44 +37,54 @@ export default class GoodsTable extends Component {
     this.fetchData();
   }
 
-  mockApi = (len) => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(getData(len));
-      }, 600);
-    });
-  };
+  // mockApi = (len) => {
+  //   return new Promise((resolve) => {
+  //     setTimeout(() => {
+  //       resolve(getData(len));
+  //     }, 600);
+  //   });
+  // };
 
-  fetchData = (len) => {
+  fetchData = () => {
     this.setState(
       {
         isLoading: true,
       },
       () => {
-        this.mockApi(len).then((data) => {
-          this.setState({
-            data,
-            isLoading: false,
-          });
+        // this.mockApi(len).then((data) => {
+        //   this.setState({
+        //     data,
+        //     isLoading: false,
+        //   });
+        // });
+        Admin_AllGoods().then((msg) => {
+          if (msg.data.code === 0) {
+            this.setState({
+              data: msg.data.data,
+              isLoading: false,
+            });
+          } else {
+            this.props.history.push('/user/login');
+          }
         });
       }
     );
   };
 
-  handlePaginationChange = (current) => {
-    this.setState(
-      {
-        current,
-      },
-      () => {
-        this.fetchData();
-      }
-    );
-  };
+  // handlePaginationChange = (current) => {
+  //   this.setState(
+  //     {
+  //       current,
+  //     },
+  //     () => {
+  //       this.fetchData();
+  //     }
+  //   );
+  // };
 
-  handleFilterChange = () => {
-    this.fetchData(5);
-  };
+  // handleFilterChange = () => {
+  //   this.fetchData(5);
+  // };
 
   handleDelete = () => {
     Dialog.confirm({
@@ -89,6 +103,21 @@ export default class GoodsTable extends Component {
     });
   };
 
+  renderImg = (value) => {
+    return (
+      <div style={styles.titleCol}>
+        <div>
+          <IceImg src={value} width={48} height={48} />
+        </div>
+      </div>
+    );
+  }
+
+  renderStatus = (value) => {
+    return (
+      <div>{value === 0 ? '已上架' : '已下架'}</div>
+    );
+  }
   renderOper = () => {
     return (
       <div>
@@ -116,12 +145,28 @@ export default class GoodsTable extends Component {
         </IceContainer>
         <IceContainer>
           <Table loading={isLoading} dataSource={data} hasBorder={false}>
-            <Table.Column title="商品名称" dataIndex="name" />
-            <Table.Column title="商品分类" dataIndex="cate" />
-            <Table.Column title="商品标签" dataIndex="tag" />
-            <Table.Column title="在售门店" dataIndex="store" />
-            <Table.Column title="总销量" dataIndex="sales" />
-            <Table.Column title="商品服务" dataIndex="service" />
+            <Table.Column
+              title="商品图标"
+              dataIndex="productIcon"
+              cell={this.renderImg}
+            />
+            <Table.Column title="商品ID" dataIndex="productId" />
+            <Table.Column title="商品名称" dataIndex="productName" />
+            <Table.Column
+              title="商品分类"
+              dataIndex="categoryType"
+            />
+            <Table.Column title="商品剩余" dataIndex="productStock" />
+            <Table.Column title="商品价格" dataIndex="productPrice" />
+            <Table.Column
+              title="商品描述"
+              dataIndex="productDescription"
+            />
+            <Table.Column
+              title="商品状态"
+              dataIndex="productStatus"
+              cell={this.renderStatus}
+            />
             <Table.Column
               title="操作"
               width={200}
@@ -144,5 +189,9 @@ const styles = {
   pagination: {
     marginTop: '20px',
     textAlign: 'right',
+  },
+  titleCol: {
+    display: 'flex',
+    flexDirection: 'row',
   },
 };
