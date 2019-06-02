@@ -83,6 +83,9 @@ export default class GoodsForm extends Component {
       }
     });
   };
+  formReset = () => {
+    this.setState({ value: {} });
+  }
 
   render() {
     return (
@@ -182,6 +185,13 @@ export default class GoodsForm extends Component {
             >
               提 交
             </Button>
+            <Button
+              type="primary"
+              onClick={this.formReset}
+              style={styles.resetSubmit}
+            >
+              重 置
+            </Button>
           </IceFormBinderWrapper>
         </IceContainer>
       </div>
@@ -204,5 +214,8 @@ const styles = {
   },
   button: {
     marginLeft: '100px',
+  },
+  resetSubmit: {
+    marginLeft: '50px',
   },
 };

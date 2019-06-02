@@ -23,14 +23,21 @@ const Admin_Categories = () => {
   return Instance.get('/buyer/product/categories');
 };
 // 获取商品
-const Admin_AllGoods = (data) => {
-  return Instance.post('/buyer/product/list', data);
+const Admin_AllGoods = (page = 0, size = 10) => {
+  return Instance.get(`/buyer/product/list/page=${page}&size=${size}`);
 };
 // 通过categoryType获取categoryName
 const Admin_Type2Name = (categoryType) => {
   return Instance.get(`/admin/categorietype/${categoryType}`);
 };
-
+// 下架商品
+const Admin_DownGoods = (productId) => {
+  return Instance.get(`/admin/downproduct/${productId}`);
+};
+// 上架商品
+const Admin_UpGoods = (productId) => {
+  return Instance.get(`/admin/upproduct/${productId}`);
+};
 export {
   Admin_Login,
   Admin_Regist,
@@ -39,4 +46,6 @@ export {
   Admin_Categories,
   Admin_AllGoods,
   Admin_Type2Name,
+  Admin_DownGoods,
+  Admin_UpGoods,
 };

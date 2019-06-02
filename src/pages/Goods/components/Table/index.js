@@ -1,34 +1,16 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
-import { Table, Pagination, Button, Dialog } from '@alifd/next';
+import { Table, Pagination, Button, Dialog, Message } from '@alifd/next';
 import IceContainer from '@icedesign/container';
 import IceImg from '@icedesign/img';
 import Filter from '../Filter';
 // eslint-disable-next-line camelcase
-import { Admin_AllGoods, Admin_Type2Name } from '../../../../api/request';
+import { Admin_AllGoods, Admin_DownGoods, Admin_UpGoods } from '../../../../api/request';
 
-// Random Numbers
-// const random = (min, max) => {
-//   return Math.floor(Math.random() * (max - min + 1) + min);
-// };
-
-// MOCK 数据，实际业务按需进行替换
-// const getData = (length = 10) => {
-//   return Array.from({ length }).map(() => {
-//     return {
-//       name: ['蓝牙音箱', '天猫精灵', '智能机器人'][random(0, 2)],
-//       cate: ['数码', '智能'][random(0, 1)],
-//       tag: ['新品', '预售'][random(0, 1)],
-//       store: ['余杭店', '滨江店', '西湖店'][random(0, 2)],
-//       sales: random(1000, 2000),
-//       service: ['可预约', '可体验'][random(0, 1)],
-//     };
-//   });
-// };
 @withRouter
 export default class GoodsTable extends Component {
   state = {
-    current: 1,
+    page: 1,
     isLoading: false,
     data: [],
   };
@@ -37,26 +19,12 @@ export default class GoodsTable extends Component {
     this.fetchData();
   }
 
-  // mockApi = (len) => {
-  //   return new Promise((resolve) => {
-  //     setTimeout(() => {
-  //       resolve(getData(len));
-  //     }, 600);
-  //   });
-  // };
-
   fetchData = () => {
     this.setState(
       {
         isLoading: true,
       },
       () => {
-        // this.mockApi(len).then((data) => {
-        //   this.setState({
-        //     data,
-        //     isLoading: false,
-        //   });
-        // });
         Admin_AllGoods().then((msg) => {
           if (msg.data.code === 0) {
             this.setState({
@@ -71,30 +39,61 @@ export default class GoodsTable extends Component {
     );
   };
 
-  // handlePaginationChange = (current) => {
-  //   this.setState(
-  //     {
-  //       current,
-  //     },
-  //     () => {
-  //       this.fetchData();
-  //     }
-  //   );
-  // };
+  handlePaginationChange = (page) => {
+    this.setState(
+      {
+        page,
+      },
+      () => {
+        Admin_AllGoods(page - 1).then((msg) => {
+          if (msg.data.code === 0) {
+            this.setState({
+              data: msg.data.data,
+              isLoading: false,
+            });
+          } else {
+            this.props.history.push('/user/login');
+          }
+        });
+      }
+    );
+  };
 
-  // handleFilterChange = () => {
-  //   this.fetchData(5);
-  // };
+  handleFilterChange = (value) => {
+    console.log(value);
+  };
+  handleSubmit = (value) => {
+    console.log(value);
+  }
 
-  handleDelete = () => {
+  handleStatus = (values) => {
     Dialog.confirm({
       title: '提示',
-      content: '确认删除吗',
+      content: `确认${values.productStatus === 0 ? '下架' : '上架'}吗`,
       onOk: () => {
-        this.fetchData(10);
+        if (values.productStatus === 0) {
+          Admin_DownGoods(values.productId).then((msg) => {
+            if (msg.data.code === 0) {
+              Message.success(msg.data.msg);
+              setTimeout(() => { window.location.reload(); }, 1000);
+            } else {
+              Message.error(msg.data.msg);
+            }
+          });
+        } else {
+          Admin_UpGoods(values.productId).then((msg) => {
+            if (msg.data.code === 0) {
+              Message.success(msg.data.msg);
+              setTimeout(() => { window.location.reload(); }, 1000);
+            } else {
+              Message.error(msg.data.msg);
+            }
+          });
+        }
       },
     });
   };
+
 
   handleDetail = () => {
     Dialog.confirm({
@@ -118,7 +117,7 @@ export default class GoodsTable extends Component {
       <div>{value === 0 ? '已上架' : '已下架'}</div>
     );
   }
-  renderOper = () => {
+  renderOper = (value, index, values) => {
     return (
       <div>
         <Button
@@ -128,20 +127,20 @@ export default class GoodsTable extends Component {
         >
           详情
         </Button>
-        <Button type="normal" warning onClick={this.handleDelete}>
-          删除
+        <Button type="normal" warning onClick={this.handleStatus.bind(this, values)}>
+          {values.productStatus === 0 ? '下架商品' : '上架商品'}
         </Button>
       </div>
     );
   };
 
   render() {
-    const { isLoading, data, current } = this.state;
+    const { isLoading, data, page } = this.state;
 
     return (
       <div style={styles.container}>
         <IceContainer>
-          <Filter onChange={this.handleFilterChange} />
+          <Filter onChange={this.handleFilterChange} onSubmit={this.handleSubmit} />
         </IceContainer>
         <IceContainer>
           <Table loading={isLoading} dataSource={data} hasBorder={false}>
@@ -170,13 +169,13 @@ export default class GoodsTable extends Component {
             <Table.Column
               title="操作"
               width={200}
-              dataIndex="oper"
+              dataIndex="productId"
               cell={this.renderOper}
             />
           </Table>
           <Pagination
             style={styles.pagination}
-            current={current}
+            current={page}
             onChange={this.handlePaginationChange}
           />
         </IceContainer>
