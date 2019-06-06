@@ -38,6 +38,11 @@ const Admin_DownGoods = (productId) => {
 const Admin_UpGoods = (productId) => {
   return Instance.get(`/admin/upproduct/${productId}`);
 };
+// 筛选商品
+const Admin_SelectGoods = (page = 0, data) => {
+  return Instance.post(`/buyer/product/selectgoods/page=${page}&size=10`, data);
+};
+
 export {
   Admin_Login,
   Admin_Regist,
@@ -48,4 +53,5 @@ export {
   Admin_Type2Name,
   Admin_DownGoods,
   Admin_UpGoods,
+  Admin_SelectGoods,
 };

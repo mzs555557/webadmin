@@ -5,7 +5,7 @@ import IceContainer from '@icedesign/container';
 import IceImg from '@icedesign/img';
 import Filter from '../Filter';
 // eslint-disable-next-line camelcase
-import { Admin_AllGoods, Admin_DownGoods, Admin_UpGoods } from '../../../../api/request';
+import { Admin_AllGoods, Admin_DownGoods, Admin_UpGoods, Admin_SelectGoods } from '../../../../api/request';
 
 @withRouter
 export default class GoodsTable extends Component {
@@ -13,6 +13,7 @@ export default class GoodsTable extends Component {
     page: 1,
     isLoading: false,
     data: [],
+    selectData: null,
   };
 
   componentDidMount() {
@@ -45,25 +46,56 @@ export default class GoodsTable extends Component {
         page,
       },
       () => {
-        Admin_AllGoods(page - 1).then((msg) => {
-          if (msg.data.code === 0) {
-            this.setState({
-              data: msg.data.data,
-              isLoading: false,
-            });
-          } else {
-            this.props.history.push('/user/login');
-          }
-        });
+        if (this.state.selectData == null) {
+          Admin_AllGoods(page - 1).then((msg) => {
+            if (msg.data.code === 0) {
+              this.setState({
+                data: msg.data.data,
+                isLoading: false,
+              });
+            } else {
+              this.props.history.push('/user/login');
+            }
+          });
+        } else {
+          Admin_SelectGoods(page - 1, this.props.selectData).then((msg) => {
+            if (msg.data.code === 0) {
+              this.setState({
+                data: msg.data.data,
+                isLoading: false,
+              });
+            } else {
+              this.props.history.push('/user/login');
+            }
+          });
+        }
       }
     );
   };
 
-  handleFilterChange = (value) => {
-    console.log(value);
-  };
   handleSubmit = (value) => {
     console.log(value);
+    this.setState({
+      selectData: value,
+      isLoading: true,
+    }, () => {
+      Admin_SelectGoods(0, value).then((msg) => {
+        console.log(msg);
+        if (msg.data.code === 0) {
+          this.setState({
+            data: msg.data.data,
+            isLoading: false,
+          });
+        } else {
+          this.props.history.push('/user/login');
+        }
+      });
+    });
+  }
+  handleReset = () => {
+    this.setState({
+      selectData: null,
+    });
   }
 
   handleStatus = (values) => {
@@ -140,7 +172,7 @@ export default class GoodsTable extends Component {
     return (
       <div style={styles.container}>
         <IceContainer>
-          <Filter onChange={this.handleFilterChange} onSubmit={this.handleSubmit} />
+          <Filter onSubmit={this.handleSubmit} onReset={this.handleReset} />
         </IceContainer>
         <IceContainer>
           <Table loading={isLoading} dataSource={data} hasBorder={false}>

@@ -42,6 +42,7 @@ export default class Filter extends Component {
   }
   formReset = () => {
     this.setState({ value: {} });
+    this.props.onReset();
   }
   render() {
     return (
@@ -89,6 +90,52 @@ export default class Filter extends Component {
               </IceFormBinder>
               <div style={styles.formError}>
                 <IceFormError name="categoryType" />
+              </div>
+            </div>
+          </Col>
+          <Col>
+            <div style={styles.formItem}>
+              <span style={styles.formLabel}>商品储存：</span>
+              <IceFormBinder triggerType="onBlur" name="productStock">
+                <Input placeholder="请输入" style={{ width: '200px' }} htmlType="number" />
+              </IceFormBinder>
+              <div style={styles.formError}>
+                <IceFormError name="productStock" />
+              </div>
+            </div>
+          </Col>
+        </Row>
+        <Row wrap gutter="20" style={styles.formRow}>
+          <Col l="6">
+            <div style={styles.formItem}>
+              <span style={styles.formLabel}>商品ID：</span>
+              <IceFormBinder triggerType="onBlur" name="productId">
+                <Input placeholder="请输入" style={{ width: '200px' }} />
+              </IceFormBinder>
+              <div style={styles.formError}>
+                <IceFormError name="productId" />
+              </div>
+            </div>
+          </Col>
+          <Col l="6">
+            <div style={styles.formItem}>
+              <span style={styles.formLabel}>商品描述：</span>
+              <IceFormBinder triggerType="onBlur" name="productDescription">
+                <Input placeholder="请输入" style={{ width: '200px' }} />
+              </IceFormBinder>
+              <div style={styles.formError}>
+                <IceFormError name="productDescription" />
+              </div>
+            </div>
+          </Col>
+          <Col l="6">
+            <div style={styles.formItem}>
+              <span style={styles.formLabel}>商品价格：</span>
+              <IceFormBinder triggerType="onBlur" name="productPrice">
+                <Input placeholder="请输入" style={{ width: '200px' }} htmlType="number" />
+              </IceFormBinder>
+              <div style={styles.formError}>
+                <IceFormError name="productPrice" />
               </div>
             </div>
           </Col>
