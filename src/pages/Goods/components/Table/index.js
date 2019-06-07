@@ -58,7 +58,7 @@ export default class GoodsTable extends Component {
             }
           });
         } else {
-          Admin_SelectGoods(page - 1, this.props.selectData).then((msg) => {
+          Admin_SelectGoods(page - 1, this.state.selectData).then((msg) => {
             if (msg.data.code === 0) {
               this.setState({
                 data: msg.data.data,

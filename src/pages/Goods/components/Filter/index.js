@@ -148,7 +148,7 @@ export default class Filter extends Component {
                 type="primary"
                 onClick={this.formSubmit}
               >
-                提 交
+                搜 索
               </Button>
               <Button
                 type="primary"
