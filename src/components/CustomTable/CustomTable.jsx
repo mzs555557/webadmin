@@ -2,8 +2,10 @@
 import React, { Component } from 'react';
 import cloneDeep from 'lodash.clonedeep';
 import PropTypes from 'prop-types';
-import { Table, Pagination } from '@alifd/next';
+import { Table, Pagination, Message } from '@alifd/next';
 import SearchFilter from './SearchFilter';
+// eslint-disable-next-line camelcase
+import { Admin_SelectOrders } from '../../api/request';
 
 export default class CustomTable extends Component {
   static displayName = 'CustomTable';
@@ -11,6 +13,7 @@ export default class CustomTable extends Component {
   static propTypes = {
     enableFilter: PropTypes.bool,
     searchQueryHistory: PropTypes.object,
+    // eslint-disable-next-line react/no-unused-prop-types
     dataSource: PropTypes.array,
   };
 
@@ -25,7 +28,7 @@ export default class CustomTable extends Component {
     this.state = {
       loading: true,
       searchQuery: cloneDeep(this.props.searchQueryHistory),
-      pageIndex: 1,
+      page: 1,
       dataSource: [],
     };
   }
@@ -42,26 +45,29 @@ export default class CustomTable extends Component {
             cloneDeep(this.props.searchQueryHistory),
             nextProps.searchQueryHistory
           ),
-          pageIndex: 1,
+          page: 1,
         },
         this.fetchDataSource
       );
     }
   }
 
-  fetchDataSource = () => {
+  fetchDataSource = (page = 0, data = {}) => {
     this.setState({
       loading: true,
-    });
-
-    // 根据当前的 searchQuery/pageIndex 获取列表数据，使用 setTimeout 模拟异步请求
-
-    setTimeout(() => {
-      this.setState({
-        loading: false,
-        dataSource: this.props.dataSource,
+    }, () => {
+      Admin_SelectOrders(page, data).then((msg) => {
+        console.log(msg);
+        if (msg.data.code === 0) {
+          this.setState({
+            loading: false,
+            dataSource: msg.data.data,
+          });
+        } else {
+          Message.error(msg.data.msg);
+        }
       });
-    }, 1 * 1000);
+    });
   };
 
   onSearchChange = (searchQuery) => {
@@ -71,13 +77,14 @@ export default class CustomTable extends Component {
   };
 
   onSearchSubmit = (searchQuery) => {
-    this.setState(
-      {
-        searchQuery,
-        pageIndex: 1,
-      },
-      this.fetchDataSource
-    );
+    console.log(searchQuery);
+    this.setState({
+      searchQuery,
+      page: 1,
+      loading: true,
+    }, () => {
+      this.fetchDataSource(this.state.page - 1, searchQuery);
+    });
   };
 
   onSearchReset = () => {
@@ -86,18 +93,18 @@ export default class CustomTable extends Component {
     });
   };
 
-  onPaginationChange = (pageIndex) => {
+  onPaginationChange = (page) => {
     this.setState(
       {
-        pageIndex,
+        page,
       },
-      this.fetchDataSource
+      this.fetchDataSource(page - 1, this.state.searchQuery)
     );
   };
 
   render() {
     const { enableFilter, columns, formConfig, hasAdvance } = this.props;
-    const { searchQuery, dataSource, loading, pageIndex } = this.state;
+    const { searchQuery, dataSource, loading, page } = this.state;
 
     return (
       <div>
@@ -128,7 +135,7 @@ export default class CustomTable extends Component {
         </Table>
         <Pagination
           style={styles.pagination}
-          current={pageIndex}
+          current={page}
           onChange={this.onPaginationChange}
         />
       </div>

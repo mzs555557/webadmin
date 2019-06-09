@@ -33,7 +33,6 @@ export default class SearchFilter extends Component {
       console.log({ errors });
       return;
     }
-
     this.props.onSubmit(value);
   };
 

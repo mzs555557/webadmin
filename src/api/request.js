@@ -42,7 +42,22 @@ const Admin_UpGoods = (productId) => {
 const Admin_SelectGoods = (page = 0, data) => {
   return Instance.post(`/buyer/product/selectgoods/page=${page}&size=10`, data);
 };
-
+// 筛选订单
+const Admin_SelectOrders = (page = 0, data = {}) => {
+  return Instance.post(`/admin/selectorder/page=${page}&size=10`, data);
+};
+// 筛选详情
+const Admin_SelectDetails = (page = 0, data = {}) => {
+  return Instance.post(`/admin/selectdetail/page=${page}&size=10`, data);
+};
+// 订单统计
+const Admin_DetailStatistics = () => {
+  return Instance.get('/admin/selectdetail/statistics');
+};
+// 分类筛选
+const Admin_SelectACategories = (page = 0, data = {}) => {
+  return Instance.post(`/admin/selectcategory/page=${page}&size=10`, data);
+};
 export {
   Admin_Login,
   Admin_Regist,
@@ -54,4 +69,8 @@ export {
   Admin_DownGoods,
   Admin_UpGoods,
   Admin_SelectGoods,
+  Admin_SelectOrders,
+  Admin_SelectDetails,
+  Admin_DetailStatistics,
+  Admin_SelectACategories,
 };

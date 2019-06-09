@@ -28,12 +28,12 @@ const asideMenuConfig = [
     icon: 'shopcar',
   },
   {
-    name: '退单管理',
+    name: '分类管理',
     path: '/chargeback',
     icon: 'cascades',
   },
   {
-    name: '发货管理',
+    name: '订单详情',
     path: '/dispatch',
     icon: 'clock',
   },

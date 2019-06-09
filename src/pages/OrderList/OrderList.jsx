@@ -6,17 +6,14 @@ import CustomTable from '../../components/CustomTable';
 import PageHead from '../../components/PageHead';
 
 const defaultSearchQuery = {
-  id: '',
-  goodId: '',
-  applyCode: '',
-  name: '',
-  state: '',
-  orderType: '',
-  createTime: [],
-  refundTime: [],
-  orderTime: [],
-  payment: '',
-  transport: '',
+  orderId: '',
+  userId: '',
+  buyerName: '',
+  buyerPhone: '',
+  buyerAddress: '',
+  orderAmount: null,
+  orderStatus: null,
+  payStatus: null,
   checkbox: 'false',
 };
 
@@ -28,135 +25,96 @@ const formConfig = [
       placeholder: '请输入订单编号',
     },
     formBinderProps: {
-      name: 'id',
+      name: 'orderId',
       required: false,
       message: '请输入正确的订单编号',
     },
   },
   {
-    label: '商品编号',
+    label: '用户编号',
     component: 'Input',
     componentProps: {
-      placeholder: '请输入商品编号',
+      placeholder: '请输入用户编号',
     },
     formBinderProps: {
-      name: 'goodId',
+      name: 'userId',
       required: false,
-      message: '请输入正确的商品编号',
+      message: '请输入正确的用户编号',
     },
   },
   {
-    label: '申请单号',
+    label: '买家姓名',
     component: 'Input',
     componentProps: {
-      placeholder: '请输入申请单号',
+      placeholder: '请输入买家姓名',
     },
     formBinderProps: {
-      name: 'applyCode',
+      name: 'buyerName',
+      required: false,
     },
   },
   {
-    label: '订单名称',
+    label: '买家电话',
     component: 'Input',
     componentProps: {
-      placeholder: '请输入订单名称',
+      placeholder: '请输入买家电话',
     },
     formBinderProps: {
-      name: 'name',
+      name: 'buyerPhone',
+    },
+  },
+  {
+    label: '买家地址',
+    component: 'Input',
+    componentProps: {
+      placeholder: '请输入买家地址',
+    },
+    formBinderProps: {
+      name: 'buyerAddress',
+    },
+  },
+  {
+    label: '订单金额',
+    component: 'Input',
+    advanced: true,
+    componentProps: {
+      placeholder: '请输入订单金额',
+      htmlType: 'number',
+    },
+    formBinderProps: {
+      name: 'orderAmount',
     },
   },
   {
     label: '订单状态',
     component: 'Select',
+    advanced: true,
     componentProps: {
       placeholder: '请选择',
       dataSource: [
-        { label: '已发货', value: 'option1' },
-        { label: '代发货', value: 'option2' },
+        { label: '新下单', value: 0 },
+        { label: '已发货', value: 1 },
+        { label: '已退单', value: 2 },
       ],
     },
     formBinderProps: {
-      name: 'state',
+      name: 'orderStatus',
     },
   },
   {
-    label: '订单类型',
-    component: 'Select',
-    componentProps: {
-      placeholder: '请选择',
-      dataSource: [
-        { label: '普通订单', value: 'option1' },
-        { label: '代付订单', value: 'option2' },
-      ],
-    },
-    formBinderProps: {
-      name: 'orderType',
-    },
-  },
-  {
-    label: '创建时间',
-    component: 'RangePicker',
-    advanced: true,
-    componentProps: {
-      placeholder: '请选择日期',
-    },
-    formBinderProps: {
-      name: 'createTime',
-    },
-  },
-  {
-    label: '下单时间',
-    component: 'RangePicker',
-    advanced: true,
-    componentProps: {
-      placeholder: '请选择日期',
-    },
-    formBinderProps: {
-      name: 'orderTime',
-    },
-  },
-  {
-    label: '退款时间',
-    component: 'RangePicker',
-    advanced: true,
-    componentProps: {
-      placeholder: '请选择日期',
-    },
-    formBinderProps: {
-      name: 'refundTime',
-    },
-  },
-  {
-    label: '付款方式',
+    label: '支付状态',
     component: 'Select',
     advanced: true,
     componentProps: {
       placeholder: '请选择',
       dataSource: [
-        { value: '1', label: '支付宝付款' },
-        { value: '2', label: '银行卡付款' },
-        { value: '3', label: '微信付款' },
-        { value: '4', label: '找人代付' },
+        { label: '未支付', value: 0 },
+        { label: '已支付', value: 1 },
+        { label: '支付失败', value: 2 },
       ],
     },
     formBinderProps: {
-      name: 'payment',
-    },
-  },
-  {
-    label: '物流方式',
-    component: 'Select',
-    advanced: true,
-    componentProps: {
-      placeholder: '请选择',
-      dataSource: [
-        { label: '快递发货', value: '1' },
-        { label: '上门自提', value: '2' },
-        { label: '同城配送', value: '3' },
-      ],
-    },
-    formBinderProps: {
-      name: 'transport',
+      name: 'payStatus',
     },
   },
   {
@@ -170,24 +128,6 @@ const formConfig = [
   },
 ];
 
-const random = (min, max) => {
-  return Math.floor(Math.random() * (max - min + 1) + min);
-};
-
-const mockData = Array.from({ length: 10 }).map(() => {
-  return {
-    id: random(1, 100),
-    goodId: random(200, 1000),
-    name: ['淘公仔', '天猫精灵', '蓝牙音响'][random(1, 2)],
-    payment:
-      ['支付宝付款', '银行卡付款', '微信付款'][random(1, 2)] || '支付宝付款',
-    orderType: ['普通订单', '代付订单'][random(0, 1)],
-    createTime: '2018-12-12',
-    state: '派送中',
-    transport: ['快递发货', '上门自提', '同城配送'][random(0, 2)],
-  };
-});
-
 @withRouter
 export default class OrderList extends Component {
   handleClick = () => {
@@ -195,13 +135,29 @@ export default class OrderList extends Component {
   };
 
   renderState = (value) => {
+    const data = {
+      0: '新下单',
+      1: '已发货',
+      2: '已退单',
+    };
     return (
       <div style={styles.state}>
-        <span style={styles.stateText}>{value}</span>
+        <span style={styles.stateText}>{data[value]}</span>
       </div>
     );
   };
-
+  renderPayStatus = (value) => {
+    const data = {
+      0: '未支付',
+      1: '已支付',
+      2: '支付失败',
+    };
+    return (
+      <div style={styles.state}>
+        <span style={styles.stateText}>{data[value]}</span>
+      </div>
+    );
+  }
   handleDelete = () => {
     Dialog.confirm({
       title: '提示',
@@ -234,30 +190,30 @@ export default class OrderList extends Component {
     return [
       {
         title: '订单编号',
-        dataIndex: 'id',
-        key: 'id',
+        dataIndex: 'orderId',
+        key: 'orderId',
         lock: true,
       },
       {
-        title: '商品编号',
-        dataIndex: 'goodId',
-        key: 'goodId',
+        title: '用户编号',
+        dataIndex: 'userId',
+        key: 'userId',
         lock: true,
       },
       {
-        title: '订单名称',
-        dataIndex: 'name',
-        key: 'name',
+        title: '买家名称',
+        dataIndex: 'buyerName',
+        key: 'buyerName',
       },
       {
-        title: '付款方式',
-        dataIndex: 'payment',
-        key: 'payment',
+        title: '买家电话',
+        dataIndex: 'buyerPhone',
+        key: 'buyerPhone',
       },
       {
-        title: '订单类型',
-        dataIndex: 'orderType',
-        key: 'orderType',
+        title: '买家地址',
+        dataIndex: 'buyerAddress',
+        key: 'buyerAddress',
       },
       {
         title: '创建时间',
@@ -265,14 +221,25 @@ export default class OrderList extends Component {
         key: 'createTime',
       },
       {
-        title: '物流方式',
-        dataIndex: 'transport',
-        key: 'transport',
+        title: '更新时间',
+        dataIndex: 'updateTime',
+        key: 'updateTime',
+      },
+      {
+        title: '订单金额',
+        dataIndex: 'orderAmount',
+        key: 'orderAmount',
+      },
+      {
+        title: '支付状态',
+        dataIndex: 'payStatus',
+        key: 'payStatus',
+        cell: this.renderPayStatus,
       },
       {
         title: '订单状态',
-        dataIndex: 'state',
-        key: 'state',
+        dataIndex: 'orderStatus',
+        key: 'orderStatus',
         cell: this.renderState,
       },
       {
@@ -289,13 +256,12 @@ export default class OrderList extends Component {
       <div>
         <PageHead
           title="订单管理"
-          buttonText="添加订单"
+          buttonText="添加商品"
           onClick={this.handleClick}
         />
         <IceContainer>
           <CustomTable
             columns={this.getTableColumns()}
-            dataSource={mockData}
             searchQueryHistory={defaultSearchQuery}
             formConfig={formConfig}
             hasAdvance
@@ -323,3 +289,70 @@ const styles = {
     background: '#e8e8e8',
   },
 };
+
+  // {
+  //   label: '创建时间',
+  //   component: 'RangePicker',
+  //   advanced: true,
+  //   componentProps: {
+  //     placeholder: '请选择日期',
+  //   },
+  //   formBinderProps: {
+  //     name: 'createTime',
+  //   },
+  // },
+  // {
+  //   label: '下单时间',
+  //   component: 'RangePicker',
+  //   advanced: true,
+  //   componentProps: {
+  //     placeholder: '请选择日期',
+  //   },
+  //   formBinderProps: {
+  //     name: 'orderTime',
+  //   },
+  // },
+  // {
+  //   label: '退款时间',
+  //   component: 'RangePicker',
+  //   advanced: true,
+  //   componentProps: {
+  //     placeholder: '请选择日期',
+  //   },
+  //   formBinderProps: {
+  //     name: 'refundTime',
+  //   },
+  // },
+  // {
+  //   label: '付款方式',
+  //   component: 'Select',
+  //   advanced: true,
+  //   componentProps: {
+  //     placeholder: '请选择',
+  //     dataSource: [
+  //       { value: '1', label: '支付宝付款' },
+  //       { value: '2', label: '银行卡付款' },
+  //       { value: '3', label: '微信付款' },
+  //       { value: '4', label: '找人代付' },
+  //     ],
+  //   },
+  //   formBinderProps: {
+  //     name: 'payment',
+  //   },
+  // },
+  // {
+  //   label: '物流方式',
+  //   component: 'Select',
+  //   advanced: true,
+  //   componentProps: {
+  //     placeholder: '请选择',
+  //     dataSource: [
+  //       { label: '快递发货', value: '1' },
+  //       { label: '上门自提', value: '2' },
+  //       { label: '同城配送', value: '3' },
+  //     ],
+  //   },
+  //   formBinderProps: {
+  //     name: 'transport',
+  //   },
+  // }

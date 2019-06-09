@@ -15,38 +15,37 @@ export default class Filter extends Component {
     value: {},
   };
 
-  formChange = (value) => {
-    this.props.onChange(value);
-  };
+  // formChange = (value) => {
+  //   this.props.onChange(value);
+  // };
 
   render() {
     return (
       <IceContainer>
         <IceFormBinderWrapper
           value={this.state.value}
-          onChange={this.formChange}
           ref="form"
         >
           <Row wrap gutter="20" style={styles.formRow}>
             <Col l="8">
               <div style={styles.formItem}>
-                <span style={styles.formLabel}>下单时间：</span>
-                <IceFormBinder triggerType="onBlur" name="createOrderTime">
-                  <DatePicker placeholder="请输入" />
+                <span style={styles.formLabel}>分类名称：</span>
+                <IceFormBinder triggerType="onBlur" name="categoryName">
+                  <Input placeholder="请输入" />
                 </IceFormBinder>
                 <div style={styles.formError}>
-                  <IceFormError name="createOrderTime" />
+                  <IceFormError name="categoryName" />
                 </div>
               </div>
             </Col>
             <Col l="8">
               <div style={styles.formItem}>
-                <span style={styles.formLabel}>商品名称：</span>
-                <IceFormBinder triggerType="onBlur" name="productName">
+                <span style={styles.formLabel}>分类Id：</span>
+                <IceFormBinder triggerType="onBlur" name="categoryId">
                   <Input placeholder="请输入" />
                 </IceFormBinder>
                 <div style={styles.formError}>
-                  <IceFormError name="productName" />
+                  <IceFormError name="categoryId" />
                 </div>
               </div>
             </Col>

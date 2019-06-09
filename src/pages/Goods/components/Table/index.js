@@ -125,15 +125,6 @@ export default class GoodsTable extends Component {
       },
     });
   };
-
-
-  handleDetail = () => {
-    Dialog.confirm({
-      title: '提示',
-      content: '暂不支持查看详情',
-    });
-  };
-
   renderImg = (value) => {
     return (
       <div style={styles.titleCol}>
@@ -152,13 +143,6 @@ export default class GoodsTable extends Component {
   renderOper = (value, index, values) => {
     return (
       <div>
-        <Button
-          type="primary"
-          style={{ marginRight: '5px' }}
-          onClick={this.handleDetail}
-        >
-          详情
-        </Button>
         <Button type="normal" warning onClick={this.handleStatus.bind(this, values)}>
           {values.productStatus === 0 ? '下架商品' : '上架商品'}
         </Button>
