@@ -1,6 +1,6 @@
 /* eslint react/no-string-refs:0 */
 import React, { Component } from 'react';
-import { Grid, DatePicker, Select, Input } from '@alifd/next';
+import { Grid, Input, Button } from '@alifd/next';
 import {
   FormBinderWrapper as IceFormBinderWrapper,
   FormBinder as IceFormBinder,
@@ -18,7 +18,13 @@ export default class Filter extends Component {
   // formChange = (value) => {
   //   this.props.onChange(value);
   // };
-
+  formSubmit = () => {
+    this.props.onSubmit(this.state.value);
+  }
+  formReset = () => {
+    this.setState({ value: {} });
+    this.props.onReset();
+  }
   render() {
     return (
       <IceContainer>
@@ -51,18 +57,35 @@ export default class Filter extends Component {
             </Col>
             <Col l="8">
               <div style={styles.formItem}>
-                <span style={styles.formLabel}>下单方式：</span>
-                <IceFormBinder triggerType="onBlur" name="orderMethod">
-                  <Select style={{ width: '200px' }}>
-                    <Select.Option value="1">代下单</Select.Option>
-                    <Select.Option value="2">自主下单</Select.Option>
-                  </Select>
+                <span style={styles.formLabel}>分类类型：</span>
+                <IceFormBinder triggerType="onBlur" name="categoryType">
+                  <Input placeholder="请输入" />
                 </IceFormBinder>
                 <div style={styles.formError}>
-                  <IceFormError name="orderMethod" />
+                  <IceFormError name="categoryType" />
                 </div>
               </div>
             </Col>
+          </Row>
+          <Row wrap gutter="40" style={styles.formRow} >
+            <Col l="6" />
+            <Col l="6">
+              <Row l="6" style={styles.formButtonRow}>
+                <Button
+                  type="primary"
+                  onClick={this.formSubmit}
+                >
+                  搜 索
+                </Button>
+                <Button
+                  type="primary"
+                  onClick={this.formReset}
+                >
+                  重置
+                </Button>
+              </Row>
+            </Col>
+            <Col l="6" />
           </Row>
         </IceFormBinderWrapper>
       </IceContainer>
@@ -78,5 +101,8 @@ const styles = {
   },
   formLabel: {
     minWidth: '70px',
+  },
+  formButtonRow: {
+    justifyContent: 'space-around',
   },
 };

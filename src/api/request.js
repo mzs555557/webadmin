@@ -39,7 +39,7 @@ const Admin_UpGoods = (productId) => {
   return Instance.get(`/admin/upproduct/${productId}`);
 };
 // 筛选商品
-const Admin_SelectGoods = (page = 0, data) => {
+const Admin_SelectGoods = (page = 0, data = {}) => {
   return Instance.post(`/buyer/product/selectgoods/page=${page}&size=10`, data);
 };
 // 筛选订单
@@ -58,6 +58,18 @@ const Admin_DetailStatistics = () => {
 const Admin_SelectACategories = (page = 0, data = {}) => {
   return Instance.post(`/admin/selectcategory/page=${page}&size=10`, data);
 };
+// 分类删除
+const Admin_DeleteCategory = (categoryId) => {
+  return Instance.delete(`/admin/deletecategory/categoryId=${categoryId}`);
+};
+// 分类修改
+const Admin_RenameCategory = (categoryId, categoryName) => {
+  return Instance.put(`/admin/renamecategory/categoryId=${categoryId}&categoryName=${categoryName}`);
+};
+// 修改订单
+const Admin_ModifyOrder = (orderId, data = { payStatus: 1 }) => {
+  return Instance.put(`/admin/modifyorder/orderId=${orderId}`, data);
+};
 export {
   Admin_Login,
   Admin_Regist,
@@ -73,4 +85,7 @@ export {
   Admin_SelectDetails,
   Admin_DetailStatistics,
   Admin_SelectACategories,
+  Admin_DeleteCategory,
+  Admin_RenameCategory,
+  Admin_ModifyOrder,
 };

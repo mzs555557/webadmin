@@ -17,11 +17,11 @@ const asideMenuConfig = [
     path: '/dashboard',
     icon: 'home2',
   },
-  {
-    name: '订单报表',
-    path: '/order/report',
-    icon: 'chart',
-  },
+  // {
+  //   name: '订单报表',
+  //   path: '/order/report',
+  //   icon: 'chart',
+  // },
   {
     name: '订单管理',
     path: '/order/list',

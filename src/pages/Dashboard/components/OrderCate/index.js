@@ -9,15 +9,15 @@ export default class OrderCate extends Component {
     const { DataView } = DataSet;
     const data = [
       {
-        item: '寄存式订单',
+        item: '已支付',
         count: 50,
       },
       {
-        item: '合约式订单',
+        item: '未支付',
         count: 30,
       },
       {
-        item: '一般订单',
+        item: '支付失败',
         count: 20,
       },
     ];

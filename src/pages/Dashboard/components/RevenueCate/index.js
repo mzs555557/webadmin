@@ -3,24 +3,35 @@ import IceContainer from '@icedesign/container';
 import { Chart, Geom, Axis, Tooltip, Coord, Legend } from 'bizcharts';
 import DataSet from '@antv/data-set';
 import ContainerTitle from '../../../../components/ContainerTitle';
+// eslint-disable-next-line camelcase
+import { Admin_Categories } from '../../../../api/request';
+// eslint-disable-next-line import/first
+import { Message } from '@alifd/next';
 
 export default class RevenueCate extends Component {
+  state = {
+    data: [],
+  }
+  componentWillMount() {
+    Admin_Categories().then((msg) => {
+      if (msg.data.code === 0) {
+        const data = msg.data.data.map((value) => {
+          return {
+            item: value.categoryName,
+            count: 100 / 4,
+          };
+        });
+        this.setState({
+          data,
+        });
+      } else {
+        Message.error(msg.data.msg);
+      }
+    });
+  }
   render() {
     const { DataView } = DataSet;
-    const data = [
-      {
-        item: '服装',
-        count: 60,
-      },
-      {
-        item: '酒水',
-        count: 30,
-      },
-      {
-        item: '家居',
-        count: 10,
-      },
-    ];
+    const { data } = this.state;
     const dv = new DataView();
     dv.source(data).transform({
       type: 'percent',

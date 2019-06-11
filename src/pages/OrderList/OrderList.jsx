@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
-import { Dialog, Button } from '@alifd/next';
+import { Dialog, Button, Message } from '@alifd/next';
 import IceContainer from '@icedesign/container';
 import { withRouter } from 'react-router-dom';
 import CustomTable from '../../components/CustomTable';
 import PageHead from '../../components/PageHead';
+// eslint-disable-next-line camelcase
+import { Admin_ModifyOrder } from '../../api/request';
 
 const defaultSearchQuery = {
   orderId: '',
@@ -158,29 +160,27 @@ export default class OrderList extends Component {
       </div>
     );
   }
-  handleDelete = () => {
+  handleDelete = (values) => {
     Dialog.confirm({
       title: '提示',
-      content: '确认删除吗',
+      content: '确认已支付吗',
+      onOk: () => {
+        Admin_ModifyOrder(values.orderId).then((msg) => {
+          if (msg.data.code === 0) {
+            Message.success(msg.data.msg);
+          } else {
+            Message.error(msg.data.msg);
+          }
+        });
+      },
     });
   };
 
-  handleDetail = () => {
-    Dialog.confirm({
-      title: '提示',
-      content: '只有管理员才能查看具体的订单信息',
-    });
-  };
-
-  renderOper = () => {
+  renderOper = (value, index, values) => {
     return (
       <div>
-        <Button text onClick={this.handleDetail}>
-          查看
-        </Button>
-        <span style={styles.separator} />
-        <Button text onClick={this.handleDelete}>
-          删除
+        <Button text onClick={this.handleDelete.bind(this, values)}>
+          确认支付
         </Button>
       </div>
     );
@@ -244,8 +244,8 @@ export default class OrderList extends Component {
       },
       {
         title: '操作',
-        dataIndex: 'detail',
-        key: 'detail',
+        dataIndex: 'orderId',
+        key: 'reState',
         cell: this.renderOper,
       },
     ];
@@ -289,70 +289,3 @@ const styles = {
     background: '#e8e8e8',
   },
 };
-
-  // {
-  //   label: '创建时间',
-  //   component: 'RangePicker',
-  //   advanced: true,
-  //   componentProps: {
-  //     placeholder: '请选择日期',
-  //   },
-  //   formBinderProps: {
-  //     name: 'createTime',
-  //   },
-  // },
-  // {
-  //   label: '下单时间',
-  //   component: 'RangePicker',
-  //   advanced: true,
-  //   componentProps: {
-  //     placeholder: '请选择日期',
-  //   },
-  //   formBinderProps: {
-  //     name: 'orderTime',
-  //   },
-  // },
-  // {
-  //   label: '退款时间',
-  //   component: 'RangePicker',
-  //   advanced: true,
-  //   componentProps: {
-  //     placeholder: '请选择日期',
-  //   },
-  //   formBinderProps: {
-  //     name: 'refundTime',
-  //   },
-  // },
-  // {
-  //   label: '付款方式',
-  //   component: 'Select',
-  //   advanced: true,
-  //   componentProps: {
-  //     placeholder: '请选择',
-  //     dataSource: [
-  //       { value: '1', label: '支付宝付款' },
-  //       { value: '2', label: '银行卡付款' },
-  //       { value: '3', label: '微信付款' },
-  //       { value: '4', label: '找人代付' },
-  //     ],
-  //   },
-  //   formBinderProps: {
-  //     name: 'payment',
-  //   },
-  // },
-  // {
-  //   label: '物流方式',
-  //   component: 'Select',
-  //   advanced: true,
-  //   componentProps: {
-  //     placeholder: '请选择',
-  //     dataSource: [
-  //       { label: '快递发货', value: '1' },
-  //       { label: '上门自提', value: '2' },
-  //       { label: '同城配送', value: '3' },
-  //     ],
-  //   },
-  //   formBinderProps: {
-  //     name: 'transport',
-  //   },
-  // }

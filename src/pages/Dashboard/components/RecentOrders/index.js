@@ -1,44 +1,54 @@
 import React, { Component } from 'react';
 import IceContainer from '@icedesign/container';
-import { Table } from '@alifd/next';
+import { Table, Message } from '@alifd/next';
+import IceImg from '@icedesign/img';
 import ContainerTitle from '../../../../components/ContainerTitle';
-
-// Random Numbers
-const random = (min, max) => {
-  return Math.floor(Math.random() * (max - min + 1) + min);
-};
-
-const IMAGES = [
-  'https://img.alicdn.com/tfs/TB10QvzDhjaK1RjSZKzXXXVwXXa-80-80.png',
-  'https://img.alicdn.com/tfs/TB1YK97DlLoK1RjSZFuXXXn0XXa-80-80.png',
-  'https://img.alicdn.com/tfs/TB1sFHcDmzqK1RjSZFpXXakSXXa-80-80.png',
-  'https://img.alicdn.com/tfs/TB19c_XDmzqK1RjSZFjXXblCFXa-80-80.png',
-];
-
-// MOCK 数据，实际业务按需进行替换
-const getData = (length = 5) => {
-  return Array.from({ length }).map((item, index) => {
-    return {
-      id: index + 1,
-      productImage: IMAGES[random(0, 3)],
-      productName: `产品 # ${index + 1}`,
-      productId: random(1000000, 2000000),
-      productNum: random(500, 100),
-      productAmount: random(1000, 10000),
-      productTime: `2018-12-1${random(1, 9)}`,
-      productStatus: ['已完成', '派送中'][random(0, 1)],
-    };
-  });
-};
+// eslint-disable-next-line camelcase
+import { Admin_SelectGoods } from '../../../../api/request';
 
 const STATUS = {
-  已完成: '#447eff',
-  派送中: '#ee706d',
+  0: '#447eff',
+  1: '#ee706d',
+  2: '#ffffff',
 };
 
 export default class OrderTrend extends Component {
-  renderProductImage = (image) => {
-    return <img src={image} alt="" style={{ maxWidth: '48px' }} />;
+  state = {
+    dataSource: [],
+    isLoading: false,
+
+  }
+  componentWillMount() {
+    this.fetchData();
+  }
+  renderImg = (value) => {
+    return (
+      <div style={styles.titleCol}>
+        <div>
+          <IceImg src={value} width={48} height={48} />
+        </div>
+      </div>
+    );
+  }
+
+  fetchData = () => {
+    this.setState(
+      {
+        isLoading: true,
+      },
+      () => {
+        Admin_SelectGoods().then((msg) => {
+          if (msg.data.code === 0) {
+            this.setState({
+              dataSource: msg.data.data,
+              isLoading: false,
+            });
+          } else {
+            Message.error(msg.data.msg);
+          }
+        });
+      }
+    );
   };
 
   renderProductStatus = (status) => {
@@ -51,26 +61,32 @@ export default class OrderTrend extends Component {
   };
 
   render() {
-    const dataSource = getData();
+    const { dataSource, isLoading } = this.state;
     return (
       <IceContainer style={{ padding: 0 }}>
         <ContainerTitle title="最近的订单" />
-        <Table dataSource={dataSource} hasBorder={false}>
-          <Table.Column title="#" dataIndex="id" />
+        <Table loading={isLoading} dataSource={dataSource} hasBorder={false}>
           <Table.Column
-            title="产品图片"
-            dataIndex="productImage"
-            cell={this.renderProductImage}
+            title="商品图标"
+            dataIndex="productIcon"
+            cell={this.renderImg}
           />
-          <Table.Column title="产品名称" dataIndex="productName" />
-          <Table.Column title="产品编号" dataIndex="productId" />
-          <Table.Column title="订单数量" dataIndex="productNum" />
-          <Table.Column title="订单金额" dataIndex="productAmount" />
-          <Table.Column title="订单时间" dataIndex="productTime" />
+          <Table.Column title="商品ID" dataIndex="productId" />
+          <Table.Column title="商品名称" dataIndex="productName" />
           <Table.Column
-            title="订单状态"
+            title="商品分类"
+            dataIndex="categoryType"
+          />
+          <Table.Column title="商品剩余" dataIndex="productStock" />
+          <Table.Column title="商品价格" dataIndex="productPrice" />
+          <Table.Column
+            title="商品描述"
+            dataIndex="productDescription"
+          />
+          <Table.Column
+            title="商品状态"
             dataIndex="productStatus"
-            cell={this.renderProductStatus}
+            cell={this.renderStatus}
           />
         </Table>
       </IceContainer>

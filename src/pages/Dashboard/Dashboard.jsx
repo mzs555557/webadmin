@@ -6,7 +6,7 @@ import PageHead from '../../components/PageHead';
 import OrderCate from './components/OrderCate';
 // import CustomerTrend from './components/CustomerTrend';
 import RecentOrders from './components/RecentOrders';
-import TopOrders from './components/TopOrders';
+// import TopOrders from './components/TopOrders';
 // import TotalRevenue from './components/TotalRevenue';
 import RevenueCate from './components/RevenueCate';
 
@@ -31,11 +31,8 @@ export default class Dashboard extends Component {
           {/* <Col l="6">
             <CustomerTrend />
           </Col> */}
-          <Col l="16">
+          <Col l="24">
             <RecentOrders />
-          </Col>
-          <Col l="8">
-            <TopOrders />
           </Col>
           {/* <Col l="16">
             <TotalRevenue />
